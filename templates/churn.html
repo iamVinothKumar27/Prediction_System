@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Prediction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid green;
+            box-shadow: 0 0 10px green;
+            background-color: black;
+            color: green;
+        }
+        input, select {
+            width: calc(100% - 30px); /* Adjust width for spacing */
+            padding: 10px;
+            margin: 8px 10px; /* Adjust margin to create space inside the container */
+            background-color: #333;
+            border: 1px solid green;
+            color: green;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        button {
+            width: calc(100% - 10px); /* Align button width with input fields */
+            padding: 12px;
+            margin: 10px 10px 0; /* Uniform margin for the button */
+            background-color: green;
+            color: black;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0f0;
+        }
+        #result {
+            padding: 15px;
+            border: 1px solid green;
+            color: green;
+            text-align: center;
+            border-radius: 4px;
+            margin: 10px 10px 0; /* Consistent spacing for the result box */
+        }
+    </style>
+</head>
+<body>
+    <form id="churnForm">
+        <h1>Churn Prediction System</h1>
+        <label>Credit Score:</label>
+        <input type="number" id="credit_score" name="CreditScore" required>
+
+        <label>Gender:</label>
+        <select id="gender" name="Gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <label>Age:</label>
+        <input type="number" id="age" name="Age" required>
+
+        <label>Balance:</label>
+        <input type="number" step="any" id="balance" name="Balance" required>
+
+        <label>Has Credit Card (1/0):</label>
+        <input type="number" id="has_cr_card" name="HasCrCard" required>
+
+        <label>Is Active Member (1/0):</label>
+        <input type="number" id="is_active_member" name="IsActiveMember" required>
+
+        <label>Estimated Salary:</label>
+        <input type="number" step="any" id="estimated_salary" name="EstimatedSalary" required>
+
+        <button type="button" onclick="submitChurnForm()">Submit</button>
+        <div id="result"></div>
+    </form>
+
+    <script>
+        function submitChurnForm() {
+            var formData = {
+                CreditScore: document.getElementById('credit_score').value,
+                Gender: document.getElementById('gender').value,
+                Age: document.getElementById('age').value,
+                Balance: document.getElementById('balance').value,
+                HasCrCard: document.getElementById('has_cr_card').value,
+                IsActiveMember: document.getElementById('is_active_member').value,
+                EstimatedSalary: document.getElementById('estimated_salary').value
+            };
+            fetch('/churn/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Prediction: ' + data.prediction_text;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
